@@ -26,8 +26,9 @@ kmbayes_parallel <- function(nchains=4, ...) {
   #' X <- dat$X
   #' set.seed(111)
   #' Sys.setenv(R_FUTURE_SUPPORTSMULTICORE_UNSTABLE="quiet")
-  #' future::plan(strategy = future::multiprocess)
-  #' fitkm.list <- kmbayes_parallel(nchains=4, y = y, Z = Z, X = X, iter = 5000,
+  #' future::plan(strategy = future::multiprocess, workers=2)
+  #' # only 50 iterations fit to save installation time
+  #' fitkm.list <- kmbayes_parallel(nchains=2, y = y, Z = Z, X = X, iter = 50,
   #'   verbose = FALSE, varsel = TRUE)
   #' closeAllConnections()
   #' }
@@ -43,7 +44,7 @@ kmbayes_parallel <- function(nchains=4, ...) {
   res
 }
 
-comb_bkmrfits <- function(fitkm.list, burnin=0, reorder=TRUE) {
+kmbayes_combine <- function(fitkm.list, burnin=0, reorder=TRUE) {
   #' Combine multiple BKMR chains
   #'
   #' @description Combine multiple chains comprising BKMR fits at different starting
@@ -51,7 +52,7 @@ comb_bkmrfits <- function(fitkm.list, burnin=0, reorder=TRUE) {
   #'
   #' @details Chains are not combined fully sequentially
   #'
-  #' @param fitkm.list output from kmbayes_par
+  #' @param fitkm.list output from \code{\link[bkmrhat]{kmbayes_parallel}}
   #' @param burnin add in custom burnin (number of burnin iterations per chain)
   #' @param reorder ensures that the first half of the combined chain contains
   #'  only the first half of each individual chain - this allows unaltered use
@@ -67,7 +68,7 @@ comb_bkmrfits <- function(fitkm.list, burnin=0, reorder=TRUE) {
   #' given by \code{chain} and \code{iters}, which index the specific chains and
   #' iterations for each posterior sample in the \code{bkmrplusfit} object
   #' @export
-  #'
+  #' @name kmbayes_combine
   #' @examples
   #' \donttest{
   #' # following example from https://jenfb.github.io/bkmr/overview.html
@@ -79,11 +80,11 @@ comb_bkmrfits <- function(fitkm.list, burnin=0, reorder=TRUE) {
   #' X <- dat$X
   #' set.seed(111)
   #' Sys.setenv(R_FUTURE_SUPPORTSMULTICORE_UNSTABLE="quiet")
-  #' future::plan(strategy = future::multiprocess)
-  #' # run 4 parallel Markov chains
-  #' fitkm.list <- kmbayes_parallel(nchains=4, y = y, Z = Z, X = X, iter = 5000,
+  #' future::plan(strategy = future::multiprocess, workers=2)
+  #' # run 4 parallel Markov chains (low iterations used for illustration)
+  #' fitkm.list <- kmbayes_parallel(nchains=2, y = y, Z = Z, X = X, iter = 500,
   #'   verbose = FALSE, varsel = TRUE)
-  #' bigkm = comb_bkmrfits(fitkm.list)
+  #' bigkm = kmbayes_combine(fitkm.list)
   #' ests = ExtractEsts(bigkm)
   #' ExtractPIPs(bigkm)
   #' pred.resp.univar <- PredictorResponseUnivar(fit = bigkm)
@@ -132,4 +133,7 @@ comb_bkmrfits <- function(fitkm.list, burnin=0, reorder=TRUE) {
   kmoverall
 }
 
+#' @rdname kmbayes_combine
+#' @export
+comb_bkmrfits <- kmbayes_combine
 

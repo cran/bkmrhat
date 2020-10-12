@@ -13,8 +13,8 @@ head(cbind(y,Z,X))
 
 ## ----1 vs 1+ chains, cache=FALSE, results='markup'----------------------------
 
-# enable parallel processing
-future::plan(strategy = future::multiprocess)
+# enable parallel processing (up to 4 simultaneous processes here)
+future::plan(strategy = future::multiprocess, workers=4, .skip=TRUE)
 
 # single run of 4000 observations from bkmr package
 set.seed(111)
@@ -30,11 +30,11 @@ system.time(kmfit5 <- suppressMessages(kmbayes_parallel(nchains=4, y = y, Z = Z,
 
 # Using rstan functions (set burnin/warmup to zero for comparability with coda numbers given later
 #  posterior summaries should be performed after excluding warmup/burnin)
-singlediag = kmbayes_diag(kmfit, warmup=0, digits_summary=2)
+singlediag = kmbayes_diagnose(kmfit, warmup=0, digits_summary=2)
 
 
 # Using rstan functions (multiple chains enable R-hat)
-multidiag = kmbayes_diag(kmfit5, warmup=0, digits_summary=2)
+multidiag = kmbayes_diagnose(kmfit5, warmup=0, digits_summary=2)
 
 # using coda functions, not using any burnin (for demonstration only)
 kmfitcoda = as.mcmc(kmfit, iterstart = 1)
@@ -47,6 +47,18 @@ traceplot(kmfitcoda)
 
 # multiple chain trace plot
 traceplot(kmfit5coda)
+
+## ----diagnostics 2b, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+
+# multiple cross-correlation plot (combines all samples)
+crosscorr(kmfit5coda)
+crosscorr.plot(kmfit5coda)
+
+## ----diagnostics 2c, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+
+# multiple chain trace plot
+#autocorr(kmfit5coda) # lots of output
+autocorr.plot(kmfit5coda)
 
 ## ----diagnostics 3, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
 
@@ -75,7 +87,7 @@ HPDinterval(kmfitcoda)
 HPDinterval(kmfit5coda)
 
 # combine multiple chains into a single chain
-fitkmccomb = comb_bkmrfits(kmfit5)
+fitkmccomb = kmbayes_combine(kmfit5)
 
 
 # For example:
@@ -102,13 +114,13 @@ with(mean.difference, {
 set.seed(111)
 system.time(kmfitbma.list <- suppressWarnings(kmbayes_parallel(nchains=4, y = y, Z = Z, X = X, iter = 1000, verbose = FALSE, varsel = TRUE)))
 
-bmadiag = kmbayes_diag(kmfitbma.list)
+bmadiag = kmbayes_diagnose(kmfitbma.list)
 
 # posterior exclusion probability of each chain
 lapply(kmfitbma.list, function(x) t(ExtractPIPs(x)))
 
 
-kmfitbma.comb = comb_bkmrfits(kmfitbma.list)
+kmfitbma.comb = kmbayes_combine(kmfitbma.list)
 summary(kmfitbma.comb)
 ExtractPIPs(kmfitbma.comb) # posterior inclusion probabilities
 
@@ -179,5 +191,25 @@ with(regfuns_par[regfuns_par$variable=="z1",], {
   box(bty='l')
   legend("bottom", col=1:nchains, pch=19, lty=1, legend=paste("chain", 1:nchains), bty="n")
 })
+
+
+## ----continue, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+
+# install dev version of bkmr to allow true continued fits.
+#install.packages("devtools")
+#devtools::install_github("jenfb/bkmr")
+
+set.seed(111)
+# run 100 initial iterations for a model with only 2 exposures
+Z2 = Z[,1:2]
+kmfitbma.start <- suppressWarnings(kmbayes(y = y, Z = Z2, X = X, iter = 500, verbose = FALSE, varsel = FALSE))
+kmbayes_diag(kmfitbma.start)
+
+# run 2000 additional iterations
+moreiterations = kmbayes_continue(kmfitbma.start, iter=2000)
+kmbayes_diag(moreiterations)
+TracePlot(moreiterations, par="beta")
+TracePlot(moreiterations, par="r")
+
 
 
