@@ -14,6 +14,7 @@ kmbayes_parallel <- function(nchains=4, ...) {
   #'
   #' @return a "bkmrfit.list" object, which is just an R list object in which each entry is a "bkmrfit" object \code{\link[bkmr]{kmbayes}}
   #' @importFrom rstan Rhat ess_bulk ess_tail
+  #' @importFrom stats runif
   #' @import future bkmr
   #' @export
   #'
@@ -33,11 +34,12 @@ kmbayes_parallel <- function(nchains=4, ...) {
   #' closeAllConnections()
   #' }
   ff <- list()
+  ss = round(runif(nchains) * .Machine$integer.max)
   for (ii in 1:nchains) {
     ff[[ii]] <- future({
       cat(paste("Chain", ii, "\n"))
       bkmr::kmbayes(...)
-    }, seed=TRUE)
+    }, seed=ss[ii])
   }
   res <- value(ff)
   class(res) <- c("bkmrfit.list", class(res))
