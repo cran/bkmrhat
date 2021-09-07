@@ -1,8 +1,7 @@
-## ----metals data, echo=TRUE, results='markup', message=FALSE------------------
+## ----metals_data, echo=TRUE, results='markup', message=FALSE------------------
 library("bkmr")
 library("bkmrhat")
 library("coda")
-Sys.setenv(R_FUTURE_SUPPORTSMULTICORE_UNSTABLE="quiet") # for future package
 
 set.seed(111)
 dat <- bkmr::SimData(n = 50, M = 5, ind=1:3, Zgen="realistic")
@@ -14,7 +13,7 @@ head(cbind(y,Z,X))
 ## ----1 vs 1+ chains, cache=FALSE, results='markup'----------------------------
 
 # enable parallel processing (up to 4 simultaneous processes here)
-future::plan(strategy = future::multiprocess, workers=4, .skip=TRUE)
+future::plan(strategy = future::multisession)
 
 # single run of 4000 observations from bkmr package
 set.seed(111)
@@ -26,7 +25,7 @@ set.seed(111)
 system.time(kmfit5 <- suppressMessages(kmbayes_parallel(nchains=4, y = y, Z = Z, X = X, iter = 1000, verbose = FALSE, varsel = FALSE)))
 
 
-## ----diagnostics 1, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+## ----diagnostics_1, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
 
 # Using rstan functions (set burnin/warmup to zero for comparability with coda numbers given later
 #  posterior summaries should be performed after excluding warmup/burnin)
@@ -43,24 +42,24 @@ kmfit5coda = as.mcmc.list(kmfit5, iterstart = 1)
 # single chain trace plot
 traceplot(kmfitcoda)
 
-## ----diagnostics 2, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+## ----diagnostics_2, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
 
 # multiple chain trace plot
 traceplot(kmfit5coda)
 
-## ----diagnostics 2b, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+## ----diagnostics_2b, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
 
 # multiple cross-correlation plot (combines all samples)
 crosscorr(kmfit5coda)
 crosscorr.plot(kmfit5coda)
 
-## ----diagnostics 2c, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+## ----diagnostics_2c, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
 
 # multiple chain trace plot
 #autocorr(kmfit5coda) # lots of output
 autocorr.plot(kmfit5coda)
 
-## ----diagnostics 3, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+## ----diagnostics_3, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
 
 # Gelman's r-hat using coda estimator (will differ from rstan implementation)
 gelman.diag(kmfit5coda)
@@ -68,15 +67,15 @@ gelman.diag(kmfit5coda)
 effectiveSize(kmfitcoda)
 effectiveSize(kmfit5coda)
 
-## ----post summaries 1, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+## ----post_summaries_1, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
 # posterior kernel marginal densities using `mcmc` and `mcmc` objects
 densplot(kmfitcoda)
 
-## ----post summaries 2, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+## ----post_summaries_2, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
 # posterior kernel marginal densities using `mcmc` and `mcmc` objects
 densplot(kmfit5coda)
 
-## ----post summaries 3, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+## ----post_summaries_3, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
 
 # posterior summaries using `mcmc` and `mcmc` objects
 summary(kmfitcoda)
@@ -139,7 +138,7 @@ with(mean.difference2, {
 })
 
 
-## ----post diagnostics, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
+## ----post_diagnostics, results='markup', fig.show='hold', fig.height=5, fig.width=7.5, cache=FALSE----
 
 set.seed(111)
 system.time(kmfitbma.list <- suppressWarnings(kmbayes_parallel(nchains=4, y = y, Z = Z, X = X, iter = 1000, verbose = FALSE, varsel = TRUE)))

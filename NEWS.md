@@ -1,3 +1,15 @@
+# `bkmrhat` v1.1.1
+
+## Major changes
+- N/A
+
+## Minor changes
+- Change burnin default to NULL in kmbayes_combine (was 0) to fit typical usage pattern and match documentation
+- Added kmbayes_combine_lowmem function, which emulates kmbayes_combine and may work in certain settings where memory constraints result in a "low memory" error in kmbayes_combine.
+
+## Bug fixes
+- MINOR: fixed "iters" objects in kmbayes_combine and kmbayes_combine_lowmem output ("bkmrplusfit" objects)
+
 # `bkmrhat` v1.0.2
 
 ## Major changes

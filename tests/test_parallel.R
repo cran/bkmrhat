@@ -6,7 +6,7 @@ y <- dat$y
 Z <- dat$Z
 X <- dat$X
 set.seed(111)
-Sys.setenv(R_FUTURE_SUPPORTSMULTICORE_UNSTABLE="quiet")
+
 future::plan(strategy = future::sequential)
 fitkm.list <- kmbayes_parallel(nchains=2, y = y, Z = Z, X = X, iter = 10,
                                verbose = FALSE, varsel = TRUE)
@@ -20,6 +20,11 @@ comb_bkmrfits(fitkm.list)
 kmbayes_diag(fitkm.list)
 closeAllConnections()
 
-future::plan(strategy = future::multiprocess, workers=2)
+future::plan(strategy = future::multisession, workers=2)
 fitkm.list <- kmbayes_parallel(nchains=2, y = y, Z = Z, X = X, iter = 10,
                                verbose = FALSE, varsel = TRUE)
+
+kmbayes_combine(fitkm.list, burnin=0)
+kmbayes_combine(fitkm.list, burnin=8, reorder = TRUE, excludeburnin=FALSE)
+kmbayes_combine(fitkm.list, burnin=8, reorder = TRUE, excludeburnin=TRUE)
+kmbayes_combine(fitkm.list, burnin=8, reorder = FALSE, excludeburnin=TRUE)
