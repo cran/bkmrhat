@@ -1,6 +1,6 @@
-b86a3da0e10fc61f9d4eb742c652701c *DESCRIPTION
+8ca0c44a67fb96a361acd0b9ab7ec2eb *DESCRIPTION
 66f4728f3c7396c266358372baeeed71 *NAMESPACE
-917c818331b7fc49144bf5631ea8b9a2 *NEWS.md
+3452beac7b856894e950b1280250d8f6 *NEWS.md
 efe5eebd9ddd5920efed8ab1307910d5 *R/coda_funs.R
 7186da46dbd7b175205fd95c36c7af2d *R/continue_funs.R
 96f390c61a5a0ebb61dc5dc5eadecbbb *R/diag_funs.R
@@ -11,11 +11,11 @@ c3b02dcf2581a0bafac60e59a37e45ed *R/invisible_funs.R
 5a605bdd20feed6fd31036092e429b77 *R/prediction_funs.R
 4361f5395942a3f2e28f994fc7ed71d6 *R/repacked_funs.R
 d111f97b66d44b1d2ba7465bee276588 *R/zzz.R
-9ea510ee3befbe0d2630b28106cd4efd *README.md
-a18939822fdda219795f8eb2109d7ee1 *build/vignette.rds
-bcd2eed61e8ec7baab271b5a7d13bd01 *inst/doc/bkmrhat-vignette.R
-b3e570c4b32dbe97bf1d152d83efcb0f *inst/doc/bkmrhat-vignette.Rmd
-d3df7fcc605c4f027441965167556091 *inst/doc/bkmrhat-vignette.html
+cbfa733ee3a7a60aff48ddc6279dd727 *README.md
+13d02d0361553a5db62983abf2f1bbab *build/vignette.rds
+3c847c17851f828004c97db48d42683e *inst/doc/bkmrhat-vignette.R
+db56e185639345d7c3510fadae11bfed *inst/doc/bkmrhat-vignette.Rmd
+4d83f0d186752b25b288dcca119e824a *inst/doc/bkmrhat-vignette.html
 4246913e4f194ac718bd1f99ad1222c4 *man/ExtractPIPs_parallel.Rd
 61adf146cca2897934945f2009053d30 *man/OverallRiskSummaries_parallel.Rd
 5b35388fa34132915582c06e6a5e10b7 *man/PredictorResponseBivar_parallel.Rd
@@ -39,4 +39,4 @@ f27ffa5a723196b8524f2728eddfa455 *tests/test_continue.R
 52a054ca1f0c4077ae136b53f683036c *tests/test_pred.R
 b6b49a8d862152f91b809f29069d15f1 *tests/test_repacks.R
 a2010e6a359475433e18da60a1991044 *tests/test_seeds.R
-b3e570c4b32dbe97bf1d152d83efcb0f *vignettes/bkmrhat-vignette.Rmd
+db56e185639345d7c3510fadae11bfed *vignettes/bkmrhat-vignette.Rmd

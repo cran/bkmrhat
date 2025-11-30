@@ -1,10 +1,22 @@
+# `bkmrhat` v1.1.5
+
+## Major changes
+- N/A
+
+## Minor changes
+- Modified description file (author, bugreports, url)
+
+## Bug fixes
+- N/A
+
+
 # `bkmrhat` v1.1.3
 
 ## Major changes
 - N/A
 
 ## Minor changes
-- Minor version bump to please CRAN checks after removal due to a depency being removed
+- Minor version bump to please CRAN checks after removal due to a dependency being removed
 - Minor doc changes
 
 ## Bug fixes

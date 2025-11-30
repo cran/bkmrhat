@@ -211,4 +211,7 @@ TracePlot(moreiterations, par="beta")
 TracePlot(moreiterations, par="r")
 
 
+# move to sequential processing (end of vignette)
+future::plan(strategy = future::sequential)
+
 
